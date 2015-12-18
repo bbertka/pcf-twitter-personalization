@@ -5,6 +5,10 @@
 About:<br>
 Users authenticating with Twitter are able to view their timeline, and receive news article recommendations based on top 20 hashtags.  Hacker news network is used to fetch the related stories.
 
+Upon pressing 'Stream', a personalized twitter stream is spawned for each user, and runs on the lattice cluster. This streamer is pulled for each user from Dockerhub
+
+See deplpoyed app 'About' page for more info
+
 Setup:<br>
 
 0) Install Lattice: http://lattice.cf/docs/getting-started/
@@ -27,4 +31,3 @@ Setup:<br>
 <br>
 <br>
 
-Note this app no longer uses Diego Lattice, so real time streaming is locked for now. With the new 1.6 runtime, managing personalized workloads for users authenticating with Twitter will be managed by CF API.  Currently this app does not scale out as it uses sessions in local memory. Plans to update sessions are in the works using Web2py integration with DB service provided by marketplace. 

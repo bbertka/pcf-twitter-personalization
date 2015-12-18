@@ -9,6 +9,8 @@ Upon pressing 'Stream', a personalized twitter stream is spawned for each user, 
 
 See deplpoyed app 'About' page for more info
 
+Demo: http://mydash.pcfninja.com/
+
 Setup:<br>
 
 0) Install Lattice: http://lattice.cf/docs/getting-started/

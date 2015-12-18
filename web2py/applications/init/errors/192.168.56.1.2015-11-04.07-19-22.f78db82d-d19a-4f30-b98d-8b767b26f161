@@ -1,0 +1,857 @@
+(dp1
+S'output'
+p2
+S"<class 'requests.exceptions.ConnectionError'> HTTPSConnectionPool(host='api.twitter.com', port=443): Max retries exceeded with url: /oauth/request_token?oauth_callback=http%3A%2F%2Fdevbox%2Flogin (Caused by <class 'socket.gaierror'>: [Errno -2] Name or service not known)"
+p3
+sS'layer'
+p4
+S'/home/www-data/web2py/applications/init/controllers/default.py'
+p5
+sS'code'
+p6
+S'from twython import Twython\nimport json, os\nimport requests\n\nimport myglobals\n\n\n\n# try something like\ndef index():\n    if session.SCREENNAME:\n        redirect(\'/dashboard\')\n    #session.clear()\n    response.title = \'myDash\'\n    response.subtitle = \'Personalized Analytics\'\n    #form, tauth = display_form()\n    form, tauth = twitter_button()\n    return dict(form=form, message="Welcome!", tauth=tauth)\n\ndef twitter_button():\n    #session.clear()\n    form=FORM(TABLE(TR("",INPUT(_type="submit",_class="btn-twitter", _value=""))))\n    tauth = None\n    if form.process().accepted:\n        tauth = get_api_keys(form.vars.screenname, form.vars.password)\n        redirect(tauth[\'auth_url\'])\n    elif form.errors:\n        response.flash = \'Form has Errors\'\n    else:\n        pass\n    return form, tauth\n\n\ndef display_form():\n    form = SQLFORM(db.twitter, formstyle=\'table3cols\', buttons = [TAG.button(\'Submit\',_type="submit", _class="btn btn-success btn-default")])\n    tauth = None\n    if form.process().accepted:\n        session.SCREENNAME = form.vars.screenname\n        tauth = get_api_keys(form.vars.screenname, form.vars.password)\n        redirect(tauth[\'auth_url\'])\n    elif form.errors:\n        response.flash = \'Form has Errors\'\n    else:\n        pass\n    return form, tauth\n\ndef get_api_keys(screenname, password):\n    twitter = Twython(myglobals.APP_KEY, myglobals.APP_SECRET)\n    tauth = twitter.get_authentication_tokens(callback_url=(\'http://%s/login\' % myglobals.APP_URI) )\n    session.OAUTH_TOKEN = tauth[\'oauth_token\']\n    session.OAUTH_TOKEN_SECRET = tauth[\'oauth_token_secret\']\n    return tauth\n\ndef login():\n    if session.SCREENNAME:\n        redirect(\'/dashboard\')\n    try:\n        response.title = \'Dashboard\'\n        oauth_verifier = request.vars[\'oauth_verifier\']\n        twitter = Twython(myglobals.APP_KEY, myglobals.APP_SECRET, session.OAUTH_TOKEN, session.OAUTH_TOKEN_SECRET)\n        tokens = twitter.get_authorized_tokens(oauth_verifier)\n        session.USER_OAUTH_TOKEN = tokens[\'oauth_token\']\n        session.USER_OAUTH_TOKEN_SECRET = tokens[\'oauth_token_secret\']\n        session.SCREENNAME = tokens[\'screen_name\']\n        twitter = Twython(myglobals.APP_KEY, myglobals.APP_SECRET, session.USER_OAUTH_TOKEN, session.USER_OAUTH_TOKEN_SECRET)\n        #timeline = twitter.get_home_timeline()\n        session.PROFILE = twitter.show_user(screen_name=session.SCREENNAME)\n        session.IMAGE = session.PROFILE[\'profile_image_url\']\n        session.JSON = tokens\n        follow_user()\n\n        redirect(\'/\')\n    except Exception as e:\n        redirect(\'/\')\n\n\ndef follow_user():\n    t = Twython(myglobals.APP_KEY, myglobals.APP_SECRET, myglobals.ACCESS_TOKEN, myglobals.ACCESS_TOKEN_SECRET)\n    t.create_friendship(screen_name=session.SCREENNAME)\n\n\ndef logout():\n    deleteBot()\n    session.clear()\n    redirect(\'/\')\n\ndef user():\n    return dict(form=auth())\n\ndef deleteBot():\n    headers = {\'Authorization\':\'Basic YmJlcnRrYTprYXJtYTE5NzY=\'}\n    r = requests.delete("http://receptor.%s/v1/desired_lrps/ltc-%s" % (myglobals.DIEGO_RECEPTOR, session.SCREENNAME.lower() ), headers=headers)\n    return dict(message=r.content)\n\nresponse._vars=response._caller(index)\n'
+p7
+sS'snapshot'
+p8
+(dp9
+S'exception'
+p10
+(dp11
+S'__module__'
+p12
+S"'requests.exceptions'"
+p13
+sS'__getslice__'
+p14
+S"<method-wrapper '__getslice__' of ConnectionError object>"
+p15
+sS'__str__'
+p16
+S"<method-wrapper '__str__' of ConnectionError object>"
+p17
+sS'__reduce__'
+p18
+S'<built-in method __reduce__ of ConnectionError object>'
+p19
+sS'__dict__'
+p20
+S'{}'
+p21
+sS'__sizeof__'
+p22
+S'<built-in method __sizeof__ of ConnectionError object>'
+p23
+sS'__weakref__'
+p24
+S'None'
+p25
+sS'__init__'
+p26
+S"<method-wrapper '__init__' of ConnectionError object>"
+p27
+sS'__setattr__'
+p28
+S"<method-wrapper '__setattr__' of ConnectionError object>"
+p29
+sS'__reduce_ex__'
+p30
+S'<built-in method __reduce_ex__ of ConnectionError object>'
+p31
+sS'__new__'
+p32
+S'<built-in method __new__ of type object>'
+p33
+sS'errno'
+p34
+S'None'
+p35
+sS'__format__'
+p36
+S'<built-in method __format__ of ConnectionError object>'
+p37
+sS'__class__'
+p38
+S"<class 'requests.exceptions.ConnectionError'>"
+p39
+sS'filename'
+p40
+S'None'
+p41
+sS'__doc__'
+p42
+S"'A Connection error occurred.'"
+p43
+sS'__getitem__'
+p44
+S"<method-wrapper '__getitem__' of ConnectionError object>"
+p45
+sS'__setstate__'
+p46
+S'<built-in method __setstate__ of ConnectionError object>'
+p47
+sS'__getattribute__'
+p48
+S"<method-wrapper '__getattribute__' of ConnectionError object>"
+p49
+sS'args'
+p50
+S'(MaxRetryError("HTTPSConnectionPool(host=\'api.twi...error\'>: [Errno -2] Name or service not known)",),)'
+p51
+sS'__subclasshook__'
+p52
+S'<built-in method __subclasshook__ of type object>'
+p53
+sS'__unicode__'
+p54
+S'<built-in method __unicode__ of ConnectionError object>'
+p55
+sS'strerror'
+p56
+S'None'
+p57
+sS'__delattr__'
+p58
+S"<method-wrapper '__delattr__' of ConnectionError object>"
+p59
+sS'__repr__'
+p60
+S"<method-wrapper '__repr__' of ConnectionError object>"
+p61
+sS'__hash__'
+p62
+S"<method-wrapper '__hash__' of ConnectionError object>"
+p63
+ssS'evalue'
+p64
+S"HTTPSConnectionPool(host='api.twitter.com', port=443): Max retries exceeded with url: /oauth/request_token?oauth_callback=http%3A%2F%2Fdevbox%2Flogin (Caused by <class 'socket.gaierror'>: [Errno -2] Name or service not known)"
+p65
+sS'request'
+p66
+cgluon.html
+XML_unpickle
+p67
+(S's\xa2c\x00\x00<div><table><tr><td style="font-weight:bold;vertical-align:top;">ajax</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">application</td><td style="vertical-align:top;">:</td><td><div>init</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">args</td><td style="vertical-align:top;">:</td><td><div><table></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">cid</td><td style="vertical-align:top;">:</td><td><div>None</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">client</td><td style="vertical-align:top;">:</td><td><div>192.168.56.1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">controller</td><td style="vertical-align:top;">:</td><td><div>default</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">cookies</td><td style="vertical-align:top;">:</td><td><div><table><tr><td style="font-weight:bold;vertical-align:top;">session_id_init</td><td style="vertical-align:top;">:</td><td><div>192.168.56.1-a09ed9b9-1b54-4f37-92a0-433e62e5a923<table><tr><td style="font-weight:bold;vertical-align:top;">comment</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">domain</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">expires</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">httponly</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">max-age</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">path</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">secure</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">version</td><td style="vertical-align:top;">:</td><td><div></div></td></tr></table></div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">env</td><td style="vertical-align:top;">:</td><td><div><table><tr><td style="font-weight:bold;vertical-align:top;">CONTENT_LENGTH</td><td style="vertical-align:top;">:</td><td><div>278</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">CONTENT_TYPE</td><td style="vertical-align:top;">:</td><td><div>multipart/form-data; boundary=----WebKitFormBoundaryI7vQdstmWhEdEai8</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">CONTEXT_DOCUMENT_ROOT</td><td style="vertical-align:top;">:</td><td><div>/var/www</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">CONTEXT_PREFIX</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">DOCUMENT_ROOT</td><td style="vertical-align:top;">:</td><td><div>/var/www</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">GATEWAY_INTERFACE</td><td style="vertical-align:top;">:</td><td><div>CGI/1.1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_ACCEPT</td><td style="vertical-align:top;">:</td><td><div>text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_ACCEPT_ENCODING</td><td style="vertical-align:top;">:</td><td><div>gzip, deflate</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_ACCEPT_LANGUAGE</td><td style="vertical-align:top;">:</td><td><div>en-US,en;q=0.8,pl;q=0.6</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_CACHE_CONTROL</td><td style="vertical-align:top;">:</td><td><div>max-age=0</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_CONNECTION</td><td style="vertical-align:top;">:</td><td><div>keep-alive</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_COOKIE</td><td style="vertical-align:top;">:</td><td><div>session_id_init=192.168.56.1-a09ed9b9-1b54-4f37-92a0-433e62e5a923</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_HOST</td><td style="vertical-align:top;">:</td><td><div>devbox</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_ORIGIN</td><td style="vertical-align:top;">:</td><td><div>https://devbox</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_REFERER</td><td style="vertical-align:top;">:</td><td><div>https://devbox/</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_UPGRADE_INSECURE_REQUESTS</td><td style="vertical-align:top;">:</td><td><div>1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_USER_AGENT</td><td style="vertical-align:top;">:</td><td><div>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">PATH_INFO</td><td style="vertical-align:top;">:</td><td><div>/</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">PATH_TRANSLATED</td><td style="vertical-align:top;">:</td><td><div>/home/www-data/web2py/wsgihandler.py/</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">QUERY_STRING</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">REMOTE_ADDR</td><td style="vertical-align:top;">:</td><td><div>192.168.56.1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">REMOTE_PORT</td><td style="vertical-align:top;">:</td><td><div>58700</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">REQUEST_METHOD</td><td style="vertical-align:top;">:</td><td><div>POST</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">REQUEST_SCHEME</td><td style="vertical-align:top;">:</td><td><div>https</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">REQUEST_URI</td><td style="vertical-align:top;">:</td><td><div>/</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">SCRIPT_FILENAME</td><td style="vertical-align:top;">:</td><td><div>/home/www-data/web2py/wsgihandler.py</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">SCRIPT_NAME</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">SERVER_ADDR</td><td style="vertical-align:top;">:</td><td><div>192.168.56.101</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">SERVER_ADMIN</td><td style="vertical-align:top;">:</td><td><div>[no address given]</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">SERVER_NAME</td><td style="vertical-align:top;">:</td><td><div>devbox</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">SERVER_PORT</td><td style="vertical-align:top;">:</td><td><div>443</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">SERVER_PROTOCOL</td><td style="vertical-align:top;">:</td><td><div>HTTP/1.1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">SERVER_SIGNATURE</td><td style="vertical-align:top;">:</td><td><div>&lt;address&gt;Apache/2.4.7 (Ubuntu) Server at devbox Port 443&lt;/address&gt;\n</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">SERVER_SOFTWARE</td><td style="vertical-align:top;">:</td><td><div>Apache/2.4.7 (Ubuntu)</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">SSL_TLS_SNI</td><td style="vertical-align:top;">:</td><td><div>devbox</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">app_folders</td><td style="vertical-align:top;">:</td><td><div>set([&#x27;/home/www-data/web2py/applications/init/&#x27;])</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">applications_parent</td><td style="vertical-align:top;">:</td><td><div>/home/www-data/web2py</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">content_length</td><td style="vertical-align:top;">:</td><td><div>278</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">content_type</td><td style="vertical-align:top;">:</td><td><div>multipart/form-data; boundary=----WebKitFormBoundaryI7vQdstmWhEdEai8</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">context_document_root</td><td style="vertical-align:top;">:</td><td><div>/var/www</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">context_prefix</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">db_sessions</td><td style="vertical-align:top;">:</td><td><div>set([])</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">debugging</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">document_root</td><td style="vertical-align:top;">:</td><td><div>/var/www</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">gateway_interface</td><td style="vertical-align:top;">:</td><td><div>CGI/1.1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">gluon_parent</td><td style="vertical-align:top;">:</td><td><div>/home/www-data/web2py</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_accept</td><td style="vertical-align:top;">:</td><td><div>text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_accept_encoding</td><td style="vertical-align:top;">:</td><td><div>gzip, deflate</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_accept_language</td><td style="vertical-align:top;">:</td><td><div>en-US,en;q=0.8,pl;q=0.6</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_cache_control</td><td style="vertical-align:top;">:</td><td><div>max-age=0</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_connection</td><td style="vertical-align:top;">:</td><td><div>keep-alive</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_cookie</td><td style="vertical-align:top;">:</td><td><div>session_id_init=192.168.56.1-a09ed9b9-1b54-4f37-92a0-433e62e5a923</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_host</td><td style="vertical-align:top;">:</td><td><div>devbox</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_origin</td><td style="vertical-align:top;">:</td><td><div>https://devbox</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_referer</td><td style="vertical-align:top;">:</td><td><div>https://devbox/</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_upgrade_insecure_requests</td><td style="vertical-align:top;">:</td><td><div>1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_user_agent</td><td style="vertical-align:top;">:</td><td><div>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_jython</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_pypy</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_source</td><td style="vertical-align:top;">:</td><td><div>True</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">local_hosts</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>devbox</div></td></tr><tr><td><div>::1</div></td></tr><tr><td><div>127.0.1.1</div></td></tr><tr><td><div>::ffff:127.0.0.1</div></td></tr><tr><td><div>127.0.0.1</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">mod_wsgi.application_group</td><td style="vertical-align:top;">:</td><td><div>127.0.1.1|</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">mod_wsgi.callable_object</td><td style="vertical-align:top;">:</td><td><div>application</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">mod_wsgi.enable_sendfile</td><td style="vertical-align:top;">:</td><td><div>0</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">mod_wsgi.handler_script</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">mod_wsgi.input_chunked</td><td style="vertical-align:top;">:</td><td><div>0</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">mod_wsgi.listener_host</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">mod_wsgi.listener_port</td><td style="vertical-align:top;">:</td><td><div>443</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">mod_wsgi.process_group</td><td style="vertical-align:top;">:</td><td><div>web2py</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">mod_wsgi.queue_start</td><td style="vertical-align:top;">:</td><td><div>1446650362519260</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">mod_wsgi.request_handler</td><td style="vertical-align:top;">:</td><td><div>wsgi-script</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">mod_wsgi.script_reloading</td><td style="vertical-align:top;">:</td><td><div>1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">mod_wsgi.version</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>3</div></td></tr><tr><td><div>4</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">mod_wsgi_application_group</td><td style="vertical-align:top;">:</td><td><div>127.0.1.1|</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">mod_wsgi_callable_object</td><td style="vertical-align:top;">:</td><td><div>application</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">mod_wsgi_enable_sendfile</td><td style="vertical-align:top;">:</td><td><div>0</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">mod_wsgi_handler_script</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">mod_wsgi_input_chunked</td><td style="vertical-align:top;">:</td><td><div>0</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">mod_wsgi_listener_host</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">mod_wsgi_listener_port</td><td style="vertical-align:top;">:</td><td><div>443</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">mod_wsgi_process_group</td><td style="vertical-align:top;">:</td><td><div>web2py</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">mod_wsgi_queue_start</td><td style="vertical-align:top;">:</td><td><div>1446650362519260</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">mod_wsgi_request_handler</td><td style="vertical-align:top;">:</td><td><div>wsgi-script</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">mod_wsgi_script_reloading</td><td style="vertical-align:top;">:</td><td><div>1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">mod_wsgi_version</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>3</div></td></tr><tr><td><div>4</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">path_info</td><td style="vertical-align:top;">:</td><td><div>/init/default/index</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">path_translated</td><td style="vertical-align:top;">:</td><td><div>/home/www-data/web2py/wsgihandler.py/</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">query_string</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">remote_addr</td><td style="vertical-align:top;">:</td><td><div>192.168.56.1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">remote_port</td><td style="vertical-align:top;">:</td><td><div>58700</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">request_method</td><td style="vertical-align:top;">:</td><td><div>POST</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">request_scheme</td><td style="vertical-align:top;">:</td><td><div>https</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">request_uri</td><td style="vertical-align:top;">:</td><td><div>/init/default/index</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">script_filename</td><td style="vertical-align:top;">:</td><td><div>/home/www-data/web2py/wsgihandler.py</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">script_name</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">server_addr</td><td style="vertical-align:top;">:</td><td><div>192.168.56.101</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">server_admin</td><td style="vertical-align:top;">:</td><td><div>[no address given]</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">server_name</td><td style="vertical-align:top;">:</td><td><div>devbox</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">server_port</td><td style="vertical-align:top;">:</td><td><div>443</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">server_protocol</td><td style="vertical-align:top;">:</td><td><div>HTTP/1.1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">server_signature</td><td style="vertical-align:top;">:</td><td><div>&lt;address&gt;Apache/2.4.7 (Ubuntu) Server at devbox Port 443&lt;/address&gt;\n</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">server_software</td><td style="vertical-align:top;">:</td><td><div>Apache/2.4.7 (Ubuntu)</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">ssl_tls_sni</td><td style="vertical-align:top;">:</td><td><div>devbox</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">web2py_original_uri</td><td style="vertical-align:top;">:</td><td><div>/</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">web2py_path</td><td style="vertical-align:top;">:</td><td><div>/home/www-data/web2py</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">web2py_version</td><td style="vertical-align:top;">:</td><td><div>2.12.3-stable+timestamp.2015.08.19.00.18.03</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.errors</td><td style="vertical-align:top;">:</td><td><div>&lt;mod_wsgi.Log object at 0x7fba7e5f1b70&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.file_wrapper</td><td style="vertical-align:top;">:</td><td><div>&lt;built-in method file_wrapper of mod_wsgi.Adapter object at 0x7fba7e57ab70&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.input</td><td style="vertical-align:top;">:</td><td><div>&lt;mod_wsgi.Input object at 0x7fba7e5f1b30&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.multiprocess</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.multithread</td><td style="vertical-align:top;">:</td><td><div>True</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.run_once</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.url_scheme</td><td style="vertical-align:top;">:</td><td><div>https</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.version</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>1</div></td></tr><tr><td><div>0</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_errors</td><td style="vertical-align:top;">:</td><td><div>&lt;mod_wsgi.Log object at 0x7fba7e5f1b70&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_file_wrapper</td><td style="vertical-align:top;">:</td><td><div>&lt;built-in method file_wrapper of mod_wsgi.Adapter object at 0x7fba7e57ab70&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_input</td><td style="vertical-align:top;">:</td><td><div>&lt;mod_wsgi.Input object at 0x7fba7e5f1b30&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_multiprocess</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_multithread</td><td style="vertical-align:top;">:</td><td><div>True</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_run_once</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_url_scheme</td><td style="vertical-align:top;">:</td><td><div>https</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_version</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>1</div></td></tr><tr><td><div>0</div></td></tr></table></div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">extension</td><td style="vertical-align:top;">:</td><td><div>html</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">folder</td><td style="vertical-align:top;">:</td><td><div>/home/www-data/web2py/applications/init/</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">function</td><td style="vertical-align:top;">:</td><td><div>index</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">global_settings</td><td style="vertical-align:top;">:</td><td><div><table><tr><td style="font-weight:bold;vertical-align:top;">app_folders</td><td style="vertical-align:top;">:</td><td><div>set([&#x27;/home/www-data/web2py/applications/init/&#x27;])</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">applications_parent</td><td style="vertical-align:top;">:</td><td><div>/home/www-data/web2py</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">db_sessions</td><td style="vertical-align:top;">:</td><td><div>set([])</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">debugging</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">gluon_parent</td><td style="vertical-align:top;">:</td><td><div>/home/www-data/web2py</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_jython</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_pypy</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_source</td><td style="vertical-align:top;">:</td><td><div>True</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">local_hosts</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>devbox</div></td></tr><tr><td><div>::1</div></td></tr><tr><td><div>127.0.1.1</div></td></tr><tr><td><div>::ffff:127.0.0.1</div></td></tr><tr><td><div>127.0.0.1</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">web2py_version</td><td style="vertical-align:top;">:</td><td><div>2.12.3-stable+timestamp.2015.08.19.00.18.03</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_https</td><td style="vertical-align:top;">:</td><td><div>True</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_local</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_restful</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_sheduler</td><td style="vertical-align:top;">:</td><td><div>None</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_shell</td><td style="vertical-align:top;">:</td><td><div>None</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">now</td><td style="vertical-align:top;">:</td><td><div>datetime.datetime(2015, 11, 4, 7, 19, 22, 519543)</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">raw_args</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">raw_extension</td><td style="vertical-align:top;">:</td><td><div>None</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">url</td><td style="vertical-align:top;">:</td><td><div>/init/default/index</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">utcnow</td><td style="vertical-align:top;">:</td><td><div>datetime.datetime(2015, 11, 4, 15, 19, 22, 519553)</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi</td><td style="vertical-align:top;">:</td><td><div>&lt;gluon.main.LazyWSGI object at 0x7fba7e5915d0&gt;</div></td></tr></table></div>'
+tRp68
+sS'frames'
+p69
+(lp70
+(dp71
+S'file'
+p72
+S'/home/www-data/web2py/gluon/restricted.py'
+p73
+sS'dump'
+p74
+(dp75
+S'environment'
+p76
+S"{'A': <class 'gluon.html.A'>, 'ANY_OF': <class 'gluon.validators.ANY_OF'>, 'ASSIGNJS': <function ASSIGNJS>, 'AppConfig': <function AppConfig>, 'Auth': <class 'gluon.tools.Auth'>, 'B': <class 'gluon.html.B'>, 'BEAUTIFY': <class 'gluon.html.BEAUTIFY'>, 'BODY': <class 'gluon.html.BODY'>, 'BR': <class 'gluon.html.BR'>, 'BUTTON': <class 'gluon.html.BUTTON'>, ...}"
+p77
+sS'ccode'
+p78
+S'<code object <module> at 0x7fba7e5f2db0, file "/...pplications/init/controllers/default.py", line 1>'
+p79
+ssS'lnum'
+p80
+I227
+sS'lines'
+p81
+(dp82
+I224
+S'            ccode = code'
+p83
+sI225
+S'        else:'
+p84
+sI226
+S'            ccode = compile2(code, layer)'
+p85
+sI227
+S'        exec ccode in environment'
+p86
+sI228
+S'    except HTTP:'
+p87
+sI229
+S'        raise'
+p88
+sI230
+S'    except RestrictedError:'
+p89
+sI231
+S'        # do not encapsulate (obfuscate) the original RestrictedError'
+p90
+sI222
+S'    try:'
+p91
+sI223
+S'        if isinstance(code, types.CodeType):'
+p92
+ssS'call'
+p93
+S"(code='from twython import Twython\\nimport json, os\\nimpo...content)\\n\\nresponse._vars=response._caller(index)\\n', environment={'A': <class 'gluon.html.A'>, 'ANY_OF': <class 'gluon.validators.ANY_OF'>, 'ASSIGNJS': <function ASSIGNJS>, 'AppConfig': <function AppConfig>, 'Auth': <class 'gluon.tools.Auth'>, 'B': <class 'gluon.html.B'>, 'BEAUTIFY': <class 'gluon.html.BEAUTIFY'>, 'BODY': <class 'gluon.html.BODY'>, 'BR': <class 'gluon.html.BR'>, 'BUTTON': <class 'gluon.html.BUTTON'>, ...}, layer='/home/www-data/web2py/applications/init/controllers/default.py')"
+p94
+sS'func'
+p95
+S'restricted'
+p96
+sa(dp97
+g72
+S'/home/www-data/web2py/applications/init/controllers/default.py'
+p98
+sg74
+(dp99
+sg80
+I95
+sg81
+(dp100
+I84
+S'    session.clear()'
+p101
+sI85
+S"    redirect('/')"
+p102
+sI86
+S''
+sI87
+S'def user():'
+p103
+sI88
+S'    return dict(form=auth())'
+p104
+sI89
+S''
+sI90
+S'def deleteBot():'
+p105
+sI91
+S"    headers = {'Authorization':'Basic YmJlcnRrYTprYXJtYTE5NzY='}"
+p106
+sI92
+S'    r = requests.delete("http://receptor.%s/v1/desired_lrps/ltc-%s" % (myglobals.DIEGO_RECEPTOR, session.SCREENNAME.lower() ), headers=headers)'
+p107
+sI93
+S'    return dict(message=r.content)'
+p108
+ssg93
+S'()'
+p109
+sg95
+S'<module>'
+p110
+sa(dp111
+g72
+S'/home/www-data/web2py/gluon/globals.py'
+p112
+sg74
+(dp113
+S'self'
+p114
+S'undefined'
+p115
+sS'f'
+S'<function index>'
+p116
+ssg80
+I412
+sg81
+(dp117
+I416
+S"        self.generic_patterns = ['*']"
+p118
+sI407
+S"        self.flash = ''            # used by the default view layout"
+p119
+sI408
+S'        self.meta = Storage()      # used by web2py_ajax.html'
+p120
+sI409
+S'        self.menu = []             # used by the default view layout'
+p121
+sI410
+S'        self.files = []            # used by web2py_ajax.html'
+p122
+sI411
+S'        self._vars = None'
+p123
+sI412
+S'        self._caller = lambda f: f()'
+p124
+sI413
+S'        self._view_environment = None'
+p125
+sI414
+S'        self._custom_commit = None'
+p126
+sI415
+S'        self._custom_rollback = None'
+p127
+ssg93
+S'(f=<function index>)'
+p128
+sg95
+S'<lambda>'
+p129
+sa(dp130
+g72
+S'/home/www-data/web2py/applications/init/controllers/default.py'
+p131
+sg74
+(dp132
+S'global twitter_button'
+p133
+S'<function twitter_button>'
+p134
+sS'tauth'
+p135
+g115
+sS'form'
+p136
+g115
+ssg80
+I17
+sg81
+(dp137
+I12
+S"        redirect('/dashboard')"
+p138
+sI13
+S'    #session.clear()'
+p139
+sI14
+S"    response.title = 'myDash'"
+p140
+sI15
+S"    response.subtitle = 'Personalized Analytics'"
+p141
+sI16
+S'    #form, tauth = display_form()'
+p142
+sI17
+S'    form, tauth = twitter_button()'
+p143
+sI18
+S'    return dict(form=form, message="Welcome!", tauth=tauth)'
+p144
+sI19
+S''
+sI20
+S'def twitter_button():'
+p145
+sI21
+S'    #session.clear()'
+p146
+ssg93
+S'()'
+p147
+sg95
+S'index'
+p148
+sa(dp149
+g72
+S'/home/www-data/web2py/applications/init/controllers/default.py'
+p150
+sg74
+(dp151
+S'form.vars'
+p152
+S'<Storage {}>'
+p153
+sS'form'
+p154
+S'<gluon.html.FORM object>'
+p155
+sS'form.vars.password'
+p156
+S'None'
+p157
+sS'global get_api_keys'
+p158
+S'<function get_api_keys>'
+p159
+sS'form.vars.screenname'
+p160
+S'None'
+p161
+sS'tauth'
+p162
+S'None'
+p163
+ssg80
+I25
+sg81
+(dp164
+I20
+S'def twitter_button():'
+p165
+sI21
+S'    #session.clear()'
+p166
+sI22
+S'    form=FORM(TABLE(TR("",INPUT(_type="submit",_class="btn-twitter", _value=""))))'
+p167
+sI23
+S'    tauth = None'
+p168
+sI24
+S'    if form.process().accepted:'
+p169
+sI25
+S'        tauth = get_api_keys(form.vars.screenname, form.vars.password)'
+p170
+sI26
+S"        redirect(tauth['auth_url'])"
+p171
+sI27
+S'    elif form.errors:'
+p172
+sI28
+S"        response.flash = 'Form has Errors'"
+p173
+sI29
+S'    else:'
+p174
+ssg93
+S'()'
+p175
+sg95
+S'twitter_button'
+p176
+sa(dp177
+g72
+S'/home/www-data/web2py/applications/init/controllers/default.py'
+p178
+sg74
+(dp179
+S'callback_url'
+p180
+g115
+sS'twitter'
+p181
+S'<Twython: N9Eu9N9iUX4MSHu8ryq8krrnH>'
+p182
+sS'global myglobals'
+p183
+S"<module 'applications.init.modules.myglobals' from 'applications/init/modules/myglobals.pyc'>"
+p184
+sS'twitter.get_authentication_tokens'
+p185
+S'<bound method Twython.get_authentication_tokens of <Twython: N9Eu9N9iUX4MSHu8ryq8krrnH>>'
+p186
+sS'myglobals.APP_URI'
+p187
+S"'devbox'"
+p188
+sS'tauth'
+p189
+g115
+ssg80
+I49
+sg81
+(dp190
+I44
+S'        pass'
+p191
+sI45
+S'    return form, tauth'
+p192
+sI46
+S''
+sI47
+S'def get_api_keys(screenname, password):'
+p193
+sI48
+S'    twitter = Twython(myglobals.APP_KEY, myglobals.APP_SECRET)'
+p194
+sI49
+S"    tauth = twitter.get_authentication_tokens(callback_url=('http://%s/login' % myglobals.APP_URI) )"
+p195
+sI50
+S"    session.OAUTH_TOKEN = tauth['oauth_token']"
+p196
+sI51
+S"    session.OAUTH_TOKEN_SECRET = tauth['oauth_token_secret']"
+p197
+sI52
+S'    return tauth'
+p198
+sI53
+S''
+ssg93
+S'(screenname=None, password=None)'
+p199
+sg95
+S'get_api_keys'
+p200
+sa(dp201
+g72
+S'/usr/local/lib/python2.7/dist-packages/twython/api.py'
+p202
+sg74
+(dp203
+S'self.client'
+p204
+S'<requests.sessions.Session object>'
+p205
+sS'self'
+p206
+S'<Twython: N9Eu9N9iUX4MSHu8ryq8krrnH>'
+p207
+sS'self.request_token_url'
+p208
+S"'https://api.twitter.com/oauth/request_token'"
+p209
+sS'params'
+p210
+g115
+sS'request_args'
+p211
+S"{'oauth_callback': 'http://devbox/login'}"
+p212
+sS'self.client.get'
+p213
+S'<bound method Session.get of <requests.sessions.Session object>>'
+p214
+sS'response'
+p215
+g115
+ssg80
+I315
+sg81
+(dp216
+I310
+S"                               OAuth version is 1.0.')"
+p217
+sI311
+S''
+sI312
+S'        request_args = {}'
+p218
+sI313
+S'        if callback_url:'
+p219
+sI314
+S"            request_args['oauth_callback'] = callback_url"
+p220
+sI315
+S'        response = self.client.get(self.request_token_url, params=request_args)'
+p221
+sI316
+S''
+sI317
+S'        if response.status_code == 401:'
+p222
+sI318
+S'            raise TwythonAuthError(response.content,'
+p223
+sI319
+S'                                   error_code=response.status_code)'
+p224
+ssg93
+S"(self=<Twython: N9Eu9N9iUX4MSHu8ryq8krrnH>, callback_url='http://devbox/login', force_login=False, screen_name='')"
+p225
+sg95
+S'get_authentication_tokens'
+p226
+sa(dp227
+g72
+S'/usr/lib/python2.7/dist-packages/requests/sessions.py'
+p228
+sg74
+(dp229
+S'url'
+p230
+S"'https://api.twitter.com/oauth/request_token'"
+p231
+sS'self'
+p232
+S'<requests.sessions.Session object>'
+p233
+sS'self.request'
+p234
+S'<bound method Session.request of <requests.sessions.Session object>>'
+p235
+sS'kwargs'
+p236
+S"{'allow_redirects': True, 'params': {'oauth_callback': 'http://devbox/login'}}"
+p237
+ssg80
+I467
+sg81
+(dp238
+I462
+S'        :param url: URL for the new :class:`Request` object.'
+p239
+sI463
+S'        :param \\*\\*kwargs: Optional arguments that ``request`` takes.'
+p240
+sI464
+S'        """'
+p241
+sI465
+S''
+sI466
+S"        kwargs.setdefault('allow_redirects', True)"
+p242
+sI467
+S"        return self.request('GET', url, **kwargs)"
+p243
+sI468
+S''
+sI469
+S'    def options(self, url, **kwargs):'
+p244
+sI470
+S'        """Sends a OPTIONS request. Returns :class:`Response` object.'
+p245
+sI471
+S''
+ssg93
+S"(self=<requests.sessions.Session object>, url='https://api.twitter.com/oauth/request_token', **kwargs={'allow_redirects': True, 'params': {'oauth_callback': 'http://devbox/login'}})"
+p246
+sg95
+S'get'
+p247
+sa(dp248
+g72
+S'/usr/lib/python2.7/dist-packages/requests/sessions.py'
+p249
+sg74
+(dp250
+S'resp'
+p251
+g115
+sS'send_kwargs'
+p252
+S"{'allow_redirects': True, 'cert': None, 'proxies': OrderedDict(), 'stream': False, 'timeout': None, 'verify': True}"
+p253
+sS'prep'
+p254
+S'<PreparedRequest [GET]>'
+p255
+sS'self'
+p256
+S'<requests.sessions.Session object>'
+p257
+sS'self.send'
+p258
+S'<bound method Session.send of <requests.sessions.Session object>>'
+p259
+ssg80
+I455
+sg81
+(dp260
+I450
+S"            'verify': verify,"
+p261
+sI451
+S"            'cert': cert,"
+p262
+sI452
+S"            'proxies': proxies,"
+p263
+sI453
+S"            'allow_redirects': allow_redirects,"
+p264
+sI454
+S'        }'
+p265
+sI455
+S'        resp = self.send(prep, **send_kwargs)'
+p266
+sI456
+S''
+sI457
+S'        return resp'
+p267
+sI458
+S''
+sI459
+S'    def get(self, url, **kwargs):'
+p268
+ssg93
+S"(self=<requests.sessions.Session object>, method='GET', url='https://api.twitter.com/oauth/request_token', params={'oauth_callback': 'http://devbox/login'}, data=None, headers=None, cookies=None, files=None, auth=None, timeout=None, allow_redirects=True, proxies=OrderedDict(), hooks=None, stream=False, verify=True, cert=None)"
+p269
+sg95
+g66
+sa(dp270
+g72
+S'/usr/lib/python2.7/dist-packages/requests/sessions.py'
+p271
+sg74
+(dp272
+S'request'
+p273
+S'<PreparedRequest [GET]>'
+p274
+sS'adapter'
+p275
+S'<requests.adapters.HTTPAdapter object>'
+p276
+sS'r'
+g115
+sS'adapter.send'
+p277
+S'<bound method HTTPAdapter.send of <requests.adapters.HTTPAdapter object>>'
+p278
+sS'kwargs'
+p279
+S"{'cert': None, 'proxies': OrderedDict(), 'stream': False, 'timeout': None, 'verify': True}"
+p280
+ssg80
+I558
+sg81
+(dp281
+I553
+S'        adapter = self.get_adapter(url=request.url)'
+p282
+sI554
+S''
+sI555
+S'        # Start time (approximately) of the request'
+p283
+sI556
+S'        start = datetime.utcnow()'
+p284
+sI557
+S'        # Send the request'
+p285
+sI558
+S'        r = adapter.send(request, **kwargs)'
+p286
+sI559
+S'        # Total elapsed time of the request (approximately)'
+p287
+sI560
+S'        r.elapsed = datetime.utcnow() - start'
+p288
+sI561
+S''
+sI562
+S'        # Response manipulation hooks'
+p289
+ssg93
+S"(self=<requests.sessions.Session object>, request=<PreparedRequest [GET]>, **kwargs={'cert': None, 'proxies': OrderedDict(), 'stream': False, 'timeout': None, 'verify': True})"
+p290
+sg95
+S'send'
+p291
+sa(dp292
+g72
+S'/usr/lib/python2.7/dist-packages/requests/adapters.py'
+p293
+sg74
+(dp294
+S'global ConnectionError'
+p295
+S"<class 'requests.exceptions.ConnectionError'>"
+p296
+sS'e'
+S'MaxRetryError("HTTPSConnectionPool(host=\'api.twi...error\'>: [Errno -2] Name or service not known)",)'
+p297
+ssg80
+I378
+sg81
+(dp298
+I373
+S''
+sI374
+S'        except socket.error as sockerr:'
+p299
+sI375
+S'            raise ConnectionError(sockerr)'
+p300
+sI376
+S''
+sI377
+S'        except MaxRetryError as e:'
+p301
+sI378
+S'            raise ConnectionError(e)'
+p302
+sI379
+S''
+sI380
+S'        except _ProxyError as e:'
+p303
+sI381
+S'            raise ProxyError(e)'
+p304
+sI382
+S''
+ssg93
+S'(self=<requests.adapters.HTTPAdapter object>, request=<PreparedRequest [GET]>, stream=False, timeout=<urllib3.util.Timeout object>, verify=True, cert=None, proxies=OrderedDict())'
+p305
+sg95
+g291
+sasS'pyver'
+p306
+S'Python 2.7.6: /usr/bin/python (prefix: /usr)'
+p307
+sS'session'
+p308
+g67
+(S's\x1a\x00\x00\x00<div><table></table></div>'
+tRp309
+sS'etype'
+p310
+S"<class 'requests.exceptions.ConnectionError'>"
+p311
+sS'date'
+p312
+S'Wed Nov  4 07:19:22 2015'
+p313
+sS'response'
+p314
+g67
+(S's6 \x00\x00<div><table><tr><td style="font-weight:bold;vertical-align:top;">body</td><td style="vertical-align:top;">:</td><td><div>&lt;cStringIO.StringO object at 0x7fba7e5f3730&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">cookies</td><td style="vertical-align:top;">:</td><td><div><table><tr><td style="font-weight:bold;vertical-align:top;">session_id_init</td><td style="vertical-align:top;">:</td><td><div>192.168.56.1-a09ed9b9-1b54-4f37-92a0-433e62e5a923<table><tr><td style="font-weight:bold;vertical-align:top;">comment</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">domain</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">expires</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">httponly</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">max-age</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">path</td><td style="vertical-align:top;">:</td><td><div>/</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">secure</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">version</td><td style="vertical-align:top;">:</td><td><div></div></td></tr></table></div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">delimiters</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>{{</div></td></tr><tr><td><div>}}</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">files</td><td style="vertical-align:top;">:</td><td><div><table></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">flash</td><td style="vertical-align:top;">:</td><td><div>Success!</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">form_label_separator</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">formstyle</td><td style="vertical-align:top;">:</td><td><div>bootstrap3_inline</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">generic_patterns</td><td style="vertical-align:top;">:</td><td><div><table></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">google_analytics_id</td><td style="vertical-align:top;">:</td><td><div>None</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">headers</td><td style="vertical-align:top;">:</td><td><div><table><tr><td style="font-weight:bold;vertical-align:top;">X-Powered-By</td><td style="vertical-align:top;">:</td><td><div>web2py</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">logo</td><td style="vertical-align:top;">:</td><td><div><a class="navbar-brand" href="/" id="web2py-logo"><b>myDash</b></a></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">menu</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div><table><tr><td><div>About</div></td></tr><tr><td><div>False</div></td></tr><tr><td><div>/about</div></td></tr><tr><td><div><table></table></div></td></tr></table></div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">menu1</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div><table><tr><td><div>Login</div></td></tr><tr><td><div>False</div></td></tr><tr><td><div>#</div></td></tr><tr><td><div><table><tr><td><div><table><tr><td><div>Help</div></td></tr><tr><td><div>False</div></td></tr><tr><td><div>/help</div></td></tr></table></div></td></tr><tr><td><div><li class="divider"></li></div></td></tr><tr><td><div><table><tr><td><div><i class="glyphicon glyphicon-log-in"></i> Login</div></td></tr><tr><td><div>False</div></td></tr><tr><td><div>/login</div></td></tr></table></div></td></tr></table></div></td></tr></table></div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">meta</td><td style="vertical-align:top;">:</td><td><div><table><tr><td style="font-weight:bold;vertical-align:top;">author</td><td style="vertical-align:top;">:</td><td><div>Your Name &lt;you@example.com&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">description</td><td style="vertical-align:top;">:</td><td><div>a cool new app</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">generator</td><td style="vertical-align:top;">:</td><td><div>Web2py Web Framework</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">keywords</td><td style="vertical-align:top;">:</td><td><div>web2py, python, framework</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">models_to_run</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>^\\w+\\.py$</div></td></tr><tr><td><div>^default/\\w+\\.py$</div></td></tr><tr><td><div>^default/index/\\w+\\.py$</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">postprocessing</td><td style="vertical-align:top;">:</td><td><div><table></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_client</td><td style="vertical-align:top;">:</td><td><div>192.168.56.1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_cookie_compression_level</td><td style="vertical-align:top;">:</td><td><div>None</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_cookie_expires</td><td style="vertical-align:top;">:</td><td><div>None</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_cookie_key</td><td style="vertical-align:top;">:</td><td><div>None</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_data_name</td><td style="vertical-align:top;">:</td><td><div>session_data_init</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_file</td><td style="vertical-align:top;">:</td><td><div>&lt;open file &#x27;/home/www-data/web2py/applications/init/sessions/1ff/030/192.168.56.1-a09ed9b9-1b54-4f37-92a0-433e62e5a923&#x27;, mode &#x27;rb+&#x27; at 0x7fba7e5970c0&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_filename</td><td style="vertical-align:top;">:</td><td><div>/home/www-data/web2py/applications/init/sessions/192.168.56.1-a09ed9b9-1b54-4f37-92a0-433e62e5a923</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_hash</td><td style="vertical-align:top;">:</td><td><div>5ae528064d35058d602297de53bce3ca</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_id</td><td style="vertical-align:top;">:</td><td><div>192.168.56.1-a09ed9b9-1b54-4f37-92a0-433e62e5a923</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_id_name</td><td style="vertical-align:top;">:</td><td><div>session_id_init</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_locked</td><td style="vertical-align:top;">:</td><td><div>True</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_masterapp</td><td style="vertical-align:top;">:</td><td><div>init</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_new</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_storage_type</td><td style="vertical-align:top;">:</td><td><div>file</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">status</td><td style="vertical-align:top;">:</td><td><div>200</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">subtitle</td><td style="vertical-align:top;">:</td><td><div>Personalized Analytics</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">title</td><td style="vertical-align:top;">:</td><td><div>myDash</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">view</td><td style="vertical-align:top;">:</td><td><div>default/index.html</div></td></tr></table></div>'
+tRp315
+sS'locals'
+p316
+(dp317
+S'proxies'
+p318
+S'OrderedDict()'
+p319
+sS'e'
+S'MaxRetryError("HTTPSConnectionPool(host=\'api.twi...error\'>: [Errno -2] Name or service not known)",)'
+p320
+sS'stream'
+p321
+S'False'
+p322
+sS'url'
+p323
+S"'/oauth/request_token?oauth_callback=http%3A%2F%2Fdevbox%2Flogin'"
+p324
+sS'verify'
+p325
+S'True'
+p326
+sS'self'
+p327
+S'<requests.adapters.HTTPAdapter object>'
+p328
+sg66
+S'<PreparedRequest [GET]>'
+p329
+sS'cert'
+p330
+S'None'
+p331
+sS'timeout'
+p332
+S'<urllib3.util.Timeout object>'
+p333
+sS'chunked'
+p334
+g322
+sS'conn'
+p335
+S'<urllib3.connectionpool.HTTPSConnectionPool object>'
+p336
+sssS'traceback'
+p337
+S'Traceback (most recent call last):\n  File "/home/www-data/web2py/gluon/restricted.py", line 227, in restricted\n    exec ccode in environment\n  File "/home/www-data/web2py/applications/init/controllers/default.py", line 95, in <module>\n  File "/home/www-data/web2py/gluon/globals.py", line 412, in <lambda>\n    self._caller = lambda f: f()\n  File "/home/www-data/web2py/applications/init/controllers/default.py", line 17, in index\n    form, tauth = twitter_button()\n  File "/home/www-data/web2py/applications/init/controllers/default.py", line 25, in twitter_button\n    tauth = get_api_keys(form.vars.screenname, form.vars.password)\n  File "/home/www-data/web2py/applications/init/controllers/default.py", line 49, in get_api_keys\n    tauth = twitter.get_authentication_tokens(callback_url=(\'http://%s/login\' % myglobals.APP_URI) )\n  File "/usr/local/lib/python2.7/dist-packages/twython/api.py", line 315, in get_authentication_tokens\n    response = self.client.get(self.request_token_url, params=request_args)\n  File "/usr/lib/python2.7/dist-packages/requests/sessions.py", line 467, in get\n    return self.request(\'GET\', url, **kwargs)\n  File "/usr/lib/python2.7/dist-packages/requests/sessions.py", line 455, in request\n    resp = self.send(prep, **send_kwargs)\n  File "/usr/lib/python2.7/dist-packages/requests/sessions.py", line 558, in send\n    r = adapter.send(request, **kwargs)\n  File "/usr/lib/python2.7/dist-packages/requests/adapters.py", line 378, in send\n    raise ConnectionError(e)\nConnectionError: HTTPSConnectionPool(host=\'api.twitter.com\', port=443): Max retries exceeded with url: /oauth/request_token?oauth_callback=http%3A%2F%2Fdevbox%2Flogin (Caused by <class \'socket.gaierror\'>: [Errno -2] Name or service not known)\n'
+p338
+s.

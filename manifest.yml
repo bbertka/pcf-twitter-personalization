@@ -1,0 +1,11 @@
+applications:
+- name: mydash
+  memory: 512M
+  stack: cflinuxfs2
+  instances: 1
+  env:
+    APP_KEY:
+    APP_SECRET:
+    ACCESS_TOKEN:
+    ACCESS_TOKEN_SECRET:
+    DIEGO_RECEPTOR: <your lattice ip>.xip.io

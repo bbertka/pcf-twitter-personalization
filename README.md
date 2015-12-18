@@ -1,5 +1,7 @@
 # PCF Twitter Personalization
 
+[![Screenshot](https://raw.githubusercontent.com/bbertka/pcf-twitter-personalization/master/screenshot.jpg)](#)
+
 About:<br>
 Users authenticating with Twitter are able to view their timeline, and receive news article recommendations based on top 20 hashtags.  Hacker news network is used to fetch the related stories.
 
